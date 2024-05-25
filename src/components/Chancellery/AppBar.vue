@@ -52,7 +52,7 @@ if (localStorage.access_token==null || localStorage.access_token==='' || localSt
               prepend-avatar="./user-alt-svgrepo-com.png"
               :subtitle="toRaw(userInfo)['email']"
               :title="`${toRaw(userInfo['last_name'])} ${toRaw(userInfo['name'])}`"
-              @click="router.replace('/judge')"
+              @click="router.replace('/user')"
           ></v-list-item>
         </v-list>
         <v-divider></v-divider>
@@ -132,12 +132,10 @@ export default {
       'name': '',
     },
     items: [
-      // {title: 'Список заявок', link: '/court_admin/applications', icon:'mdi-book-plus'},
-      {title: 'Судебные дела', link: '/judge/courts', icon:'mdi-bank'},
-      // {title: 'Список судей', link: '/court_admin/meetings', icon:'mdi-account-tie'},
-      // {title: 'Канцелярия', link: '/court_admin/meetings', icon:'mdi-account-tie'},
-      {title: 'Календарь заседаний', link: '/judge/meetings', icon:'mdi-calendar-alert'},
-      { title: 'Новости',link: '/news',icon: 'mdi-newspaper' },
+      {title: 'Список заявок', link: '/chancellery/applications', icon:'mdi-book-plus'},
+      // {title: 'Судебные дела', link: '/user/courts', icon:'mdi-bank'},
+      // {title: 'Судебные заседания', link: '/user/meetings', icon:'mdi-calendar-alert'},
+      // { title: 'Новости',link: '/news',icon: 'mdi-newspaper' },
       // { title: 'Войти', link: '/logout',icon: 'mdi-account-multiple' },
       // { title: 'Регистрация', link: '/logout',icon: 'mdi-star' },
     ],

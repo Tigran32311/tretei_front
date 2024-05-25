@@ -21,9 +21,9 @@
   </div>
 </template>
 <script>
-import AppBar from '@/components/User/AppBar.vue'
+import AppBar from '@/components/Judge/AppBar.vue'
 import FooterSite from "@/components/FooterSite.vue";
-import Courts from "@/components/User/Courts.vue";
+import Courts from "@/components/Judge/Courts.vue";
 export default {
   components: {
     AppBar,

@@ -87,8 +87,9 @@ const page = ref(1)
       <v-col dense class="ml-5">
         <p v-text="`Статус заявки: Заявка`"></p>
         <p v-text="`Истец: Мелконян Т.Г.`"></p>
-        <p v-text="`Ответчик: Мелконян В.Г.`"></p>
-        <p v-text="`Дата создания: 21.12.2023`" class="mb-2"></p>
+        <p v-text="`Ответчик: Ляпанов А.А.`"></p>
+        <p v-text="`Дата создания: 21.11.2024`" class="mb-2"></p>
+        <p v-text="`Комментарий оператора: Заявка составлена верно`" class="mb-2"></p>
         <v-tooltip text="Скачать заявку">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -105,36 +106,37 @@ const page = ref(1)
           @submit.prevent=""
       >
         <v-card-text>
-          <v-col dense>
-            <p class="text-h6 mb-2">Модерация заявки</p>
-            <v-textarea
-                label="Комментарий (необязательно)"
-                model-value=""
-                name="input-7-1"
-                variant="filled"
-                auto-grow
-            ></v-textarea>
-            <v-row
-            justify="center"
-            class="ga-4"
-            >
-              <v-btn
-                  text="Подтвердить заявку"
-                  color="green"
+          <v-form>
+            <v-col dense>
+              <p class="text-h6 mb-2">Принятие заявки</p>
+              <v-text-field
+                  label="Номер дела"
+                  required
+              ></v-text-field>
+              <v-text-field
+                  label="Номер материала дела"
+                  required
+              ></v-text-field>
+              <v-select
+                  label="Выбрать судью"
+              ></v-select>
+              <v-row
+              justify="center"
+              class="ga-4"
               >
-              </v-btn>
-              <v-btn
-                  text="Отклонить заявку"
-                  color="red"
-              >
-              </v-btn>
-              <v-btn
-                  text="Отправить на редактирование"
-                  color="primary"
-              >
-              </v-btn>
-            </v-row>
-          </v-col>
+                <v-btn
+                    text="Оставить без движения"
+                    color="red"
+                >
+                </v-btn>
+                <v-btn
+                    text="Принять в производство"
+                    color="green"
+                >
+                </v-btn>
+              </v-row>
+            </v-col>
+          </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -192,7 +194,7 @@ export default {
     }
   },
   created() {
-    axios.get('http://127.0.0.1:8000/Api/v1/getAppointmentListChancellery',{
+    axios.get('http://127.0.0.1:8000/Api/v1/courtAdmin/getAppointmentList',{
       headers: {
         'authorization': `Bearer ${localStorage.access_token}`
       }

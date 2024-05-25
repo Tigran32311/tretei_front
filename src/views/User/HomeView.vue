@@ -4,11 +4,9 @@
         <v-layout>
           <v-app>
             <AppBar />
-  <!--          <LeftMenu />-->
-
             <v-main>
               <div style="">
-                <HomeUnauthorize></HomeUnauthorize>
+                <HomeUser></HomeUser>
                 <v-footer
                     class="bg-indigo-lighten-1"
                 >
@@ -24,15 +22,15 @@
 </template>
 <script>
 // @ is an alias to /src
-import AppBar from '@/components/AppBar.vue'
+import AppBar from '@/components/User/AppBar.vue'
 // import LeftMenu from "@/components/LeftMenu.vue"
 import FooterSite from "@/components/FooterSite.vue";
-import HomeUnauthorize from "@/components/Unauthorize/HomeUnauthorize.vue";
+import HomeUser from "@/components/User/Home.vue";
 export default {
   components: {
     AppBar,
     FooterSite,
-    HomeUnauthorize,
+    HomeUser,
     // LeftMenu,
   }
 }

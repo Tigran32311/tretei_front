@@ -6,7 +6,7 @@
           <AppBar />
           <v-main>
             <div style="">
-              <Applications></Applications>
+              <Courts></Courts>
               <v-footer
                   class="bg-indigo-lighten-1"
               >
@@ -23,12 +23,12 @@
 <script>
 import AppBar from '@/components/User/AppBar.vue'
 import FooterSite from "@/components/FooterSite.vue";
-import Applications from "@/components/User/Applications.vue";
+import Courts from "@/components/User/Courts.vue";
 export default {
   components: {
     AppBar,
     FooterSite,
-    Applications,
+    Courts,
   }
 }
 

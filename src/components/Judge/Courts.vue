@@ -1,49 +1,11 @@
 <script setup>
-import {ref, toRaw} from 'vue'
+import {toRaw} from 'vue'
 import axios from "axios";
 import router from "@/router";
 import DatePicker from "@/components/DatePicker.vue";
 
-const page = ref(1)
-const itemsNext = Array.from({ length: 15 }, (k, v) => ({
-  title: 'Item ' + v + 1,
-  text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima, at placeat totam, magni doloremque veniam neque porro libero rerum unde voluptatem!',
-}))
-// const items =Array(15)
-// axios.get('http://127.0.0.1:8000/Api/v1/getAppointment',{
-//   headers: {
-//     'authorization': `Bearer ${localStorage.access_token}`
-//   }
-// },)
-//     .then(response => {
-//       // localStorage.access_token = response.data.token
-//       // location.href="/"
-//       // router.replace('/')
-//       console.log(response)
-//       // this.userInfo = response["data"]
-//       if (Array.isArray(response.data)) {
-//         items.map(response.data)
-//         // response.data.forEach((item)=>{
-//         //   items.(
-//         //     item
-//         //   )
-//         // })
-//       }
-//     })
-//     .catch(function (error) {
-//       // localStorage.access_token = ''
-//       // router.replace('/')
-//       if (error.response) {
-//
-//       } else if (error.request) {
-//         console.log(error.request);
-//       } else {
-//         console.log('Error', error.message);
-//       }
-//       console.log(error.config);
-//     })
-// // console.log(items)
-console.log(itemsNext)
+// const page = ref(1)
+
 </script>
 
 <template>
@@ -65,6 +27,7 @@ console.log(itemsNext)
                   :color="isHovering ? 'grey-lighten-1' : undefined"
                   :title="`Номер дела: ${toRaw(item)['case_number']}`"
                   :subtitle="`Номер материала дела: ${toRaw(item)['material_num']}`"
+                    @click="lookModal = true"
               >
                 <!--                  :prepend-icon="`${toRaw(item)['prepend-icon']}`"-->
                 <template v-slot:prepend>
@@ -75,7 +38,6 @@ console.log(itemsNext)
                 <!--                    <v-card-subtitle v-text="`Ответчик: ${toRaw(item)['defendant_fio']}`"></v-card-subtitle>-->
                 <!--                  </v-card-item>-->
                 <v-card-text>
-                  <p v-text="`Судья: ${toRaw(item)['judge_fio']}`"></p>
                   <p v-text="`Статус: ${toRaw(item)['status_name']}`"></p>
                   <p v-text="`Дата создания: ${toRaw(item)['date_start']}`"></p>
                   <p v-text="`Истец: ${toRaw(item)['plaintiff_fio']}`"></p>
@@ -94,16 +56,16 @@ console.log(itemsNext)
                       ></v-btn>
                     </template>
                   </v-tooltip>
-                  <v-tooltip text="Отправить обращение председателю суда">
-                    <template v-slot:activator="{ props }">
-                      <v-btn
-                          v-bind="props"
-                          color="orange"
-                          icon="mdi-file-document-edit"
-                          size="x-large"
-                      ></v-btn>
-                    </template>
-                  </v-tooltip>
+<!--                  <v-tooltip text="Отправить обращение председателю суда">-->
+<!--                    <template v-slot:activator="{ props }">-->
+<!--                      <v-btn-->
+<!--                          v-bind="props"-->
+<!--                          color="orange"-->
+<!--                          icon="mdi-file-document-edit"-->
+<!--                          size="x-large"-->
+<!--                      ></v-btn>-->
+<!--                    </template>-->
+<!--                  </v-tooltip>-->
                 </v-card-actions>
               </v-card>
             </template>
@@ -115,51 +77,124 @@ console.log(itemsNext)
     </v-container>
   </div>
   <v-dialog
-      v-model="addModal"
-      max-width="500"
+      v-model="lookModal"
+      max-width="1000"
       persistent
   >
     <v-card
-        prepend-icon="mdi-plus"
-        title="Добавление заявки"
+        title="Просмотр судебного дела"
     >
+      <v-col dense class="ml-5">
+        <p v-text="`Номер дела: 333`"></p>
+        <p v-text="`Номер материала дела: 222`"></p>
+        <p v-text="`Статус дела: Исполняется`"></p>
+        <p v-text="`Истец: Мелконян Т.Г.`"></p>
+        <p v-text="`Ответчик: Петров И.С.`"></p>
+        <p v-text="`Дата создания: 21.12.2024`" class="mb-2"></p>
+        <v-row class="ga-2 mt-5">
+          <v-tooltip text="Скачать материалы дела">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                  v-bind="props"
+                  color="green"
+                  text="Скачать материалы дела"
+                  @click="downloadFile(toRaw(item)['appointment_file'])"
+              ></v-btn>
+            </template>
+          </v-tooltip>
+          <v-btn
+              text="Назначить заседание по данному делу"
+              color="primary"
+              @click="addMeeting = true"
+          >
+          </v-btn>
+        </v-row>
+      </v-col>
       <v-form
           v-model="addAppForm"
           @submit.prevent=""
       >
         <v-card-text>
-          <v-col dense>
-            <v-select
-                clearable
-                label="Истец"
-                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            ></v-select>
-            <v-select
-                clearable
-                label="Ответчик"
-                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            ></v-select>
-            <v-select
-                clearable
-                label="Статус"
 
-                :items="['Заявка', 'Черновик',]"
-            ></v-select>
-            <v-file-input label="Загрузите файл заявки"></v-file-input>
-          </v-col>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
               text="Назад"
               variant="plain"
-              @click="addModal = false"
+              @click="lookModal = false"
+          ></v-btn>
+          <!--          <v-btn-->
+          <!--              color="primary"-->
+          <!--              text="Добавить"-->
+          <!--              variant="tonal"-->
+          <!--              type="submit"-->
+          <!--          ></v-btn>-->
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
+  <v-dialog
+      v-model="addMeeting"
+      max-width="1000"
+      persistent
+  >
+    <v-card
+        title="Назначение заседания"
+    >
+      <v-form
+          v-model="addAppForm"
+          @submit.prevent=""
+      >
+        <v-card-text>
+          <v-form>
+            <v-col dense>
+              <v-text-field
+                  label="Укажите адрес"
+                  required
+              ></v-text-field>
+              <date-picker
+                  label="Выберите дату проведения заседания"
+                  v-model="date__meetins"
+                  color="primary"
+              ></date-picker>
+              <v-text-field
+                  v-model="time"
+                  :active="menu2"
+                  :focus="menu2"
+                  label="Укажите время заседания"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  class="mt-4"
+              >
+                <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    activator="parent"
+                    transition="scale-transition"
+                >
+                  <v-time-picker
+                      v-if="menu2"
+                      v-model="time"
+                      format="24hr"
+                      full-width
+                  ></v-time-picker>
+                </v-menu>
+              </v-text-field>
+            </v-col>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+              text="Назад"
+              variant="plain"
+              @click="addMeeting = false"
           ></v-btn>
           <v-btn
-              color="primary"
               text="Добавить"
-              variant="tonal"
-              type="submit"
+              color="green"
+              variant="flat"
           ></v-btn>
         </v-card-actions>
       </v-form>
@@ -191,6 +226,8 @@ console.log(itemsNext)
 <script>
 import axios from "axios";
 import moment from "moment";
+import DatePicker from "@/components/DatePicker.vue";
+import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 export default {
   data: ()=> {
@@ -198,13 +235,19 @@ export default {
       judgeImg: require("@/assets/judgeImg.jpg"),
       doc_tab: null,
       items: [],
-      addModal: false,
+      lookModal: false,
       addAppForm: '',
-
+      addMeeting: false,
+      time: null,
+      menu2: false,
+      date__meetins: null,
     }
   },
+  components: {
+      DatePicker,VTimePicker
+  },
   created() {
-    axios.get('http://127.0.0.1:8000/Api/v1/courtCase/list',{
+    axios.get('http://127.0.0.1:8000/Api/v1/judge/courtCase/list',{
       headers: {
         'authorization': `Bearer ${localStorage.access_token}`
       }

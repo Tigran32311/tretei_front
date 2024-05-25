@@ -22,10 +22,10 @@
 </template>
 <script>
 // @ is an alias to /src
-import AppBar from '@/components/User/AppBar.vue'
+import AppBar from '@/components/Judge/AppBar.vue'
 // import LeftMenu from "@/components/LeftMenu.vue"
 import FooterSite from "@/components/FooterSite.vue";
-import HomeUser from "@/components/User/Home.vue";
+import HomeUser from "@/components/Judge/Home.vue";
 export default {
   components: {
     AppBar,

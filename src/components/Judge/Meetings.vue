@@ -173,7 +173,7 @@ export default {
       value: [new Date()],
       events: [],
       colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      titles: ['Заседание по делу №333', 'Заседание по делу №123', ],
+      titles: ['Заседание по делу №333', 'Заседание по делу №123', 'Заседание по делу №222'],
     }
   },
   created() {
@@ -290,7 +290,7 @@ export default {
       const max = end
       const days = (max.getTime() - min.getTime()) / 86400000
       // const eventCount = this.rnd(days, days + 20)
-      const eventCount = 5
+      const eventCount = 20
 
       for (let i = 0; i < eventCount; i++) {
         const allDay = this.rnd(0, 3) === 0

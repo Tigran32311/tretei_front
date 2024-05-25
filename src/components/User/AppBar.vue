@@ -1,3 +1,15 @@
+<script setup>
+import router from "@/router";
+import axios from "axios";
+import {toRaw} from "vue";
+
+let user = ''
+
+if (localStorage.access_token==null || localStorage.access_token==='' || localStorage.access_token==='undefined') {
+  router.replace('/')
+}
+</script>
+
 <template>
     <v-app-bar scroll-behavior="collapse elevate" :elevation="2" prominent class="bg-indigo-lighten-1">
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
@@ -5,12 +17,12 @@
       <v-app-bar-title>Третейский суд</v-app-bar-title>
       <v-spacer></v-spacer>
 <!--      <v-btn variant="outlined" to="/login" size="small" text="Войти"> </v-btn>-->
-      <v-btn variant="outlined" @click="login = true" size="small" text="Войти"> </v-btn>
+      <v-btn variant="outlined" @click="logoutModal = true" size="small" text="Выйти"> </v-btn>
 
       <v-menu transition="scale-transition">
         <template v-slot:activator="{ props }">
           <v-btn icon v-bind="props">
-            <v-badge content="6" color="red-darken-2" size="x-small">
+            <v-badge content="3" color="red-darken-2" size="x-small">
               <v-icon icon="mdi-bell" color="white"></v-icon>
             </v-badge>
           </v-btn>
@@ -37,9 +49,10 @@
       >
         <v-list>
           <v-list-item
-              prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-              subtitle="sandra_a88@gmailcom"
-              title="Sandra Adams"
+              prepend-avatar="./user-alt-svgrepo-com.png"
+              :subtitle="toRaw(userInfo)['email']"
+              :title="`${toRaw(userInfo['last_name'])} ${toRaw(userInfo['name'])}`"
+              @click="router.replace('/user')"
           ></v-list-item>
         </v-list>
         <v-divider></v-divider>
@@ -49,142 +62,20 @@
               :key="index"
               :value="index"
           >
-            <v-list-item :prepend-icon="item.icon" :title="item.title" :value="item.link"></v-list-item>
+            <v-list-item
+                :prepend-icon="item.icon"
+                :title="item.title"
+                :value="item.link"
+                @click="router.replace(item.link)"
+            ></v-list-item>
           </v-list-item>
           <v-divider></v-divider>
           <v-list-item
-
           >
-            <v-list-item prepend-icon="mdi-account" title="Войти" @click="login = true"></v-list-item>
-            <v-list-item prepend-icon="mdi-account" title="Регистрация" @click="registerModal = true"></v-list-item>
             <v-list-item prepend-icon="mdi-account" title="Выйти" @click="logoutModal = true"></v-list-item>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-
-    <v-dialog
-        v-model="login"
-        max-width="500"
-        persistent
-    >
-      <v-card
-          prepend-icon="mdi-account"
-          title="Войти"
-      >
-        <v-form
-            v-model="sendLoginForm"
-          @submit.prevent="loginSend"
-        >
-          <v-card-text>
-            <v-col dense>
-              <v-text-field
-                  label="Email*"
-                  name="email"
-                  v-model="email"
-                  required
-              ></v-text-field>
-              <v-text-field
-                  label="Пароль*"
-                  type="password"
-                  v-model="password"
-                  name="password"
-                  required
-              ></v-text-field>
-              <div class="mx-4">
-                У вас нет аккаунта? <v-btn variant="plain" @click="registerModal = true"> Регистрация </v-btn>
-              </div>
-            </v-col>
-          </v-card-text>
-
-            <v-card-text v-if="errorLoginModal" class="text-red" >
-              Проверьте логин и пароль
-            </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                text="Отмена"
-                variant="plain"
-                @click="login = false"
-            ></v-btn>
-            <v-btn
-                color="primary"
-                text="Войти"
-                variant="tonal"
-                type="submit"
-            ></v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-<!--      <LoginForm :login="login" @closeModal=""></LoginForm>-->
-    </v-dialog>
-
-    <v-dialog
-        v-model="registerModal"
-        max-width="500"
-        persistent
-    >
-      <v-card
-          prepend-icon="mdi-account"
-          title="Регистрация"
-      >
-        <v-card-text>
-          <v-col dense>
-            <v-text-field
-                label="Email*"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Пароль*"
-                type="password"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Подтверждение пароля*"
-                type="confirmPassword*"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Фамилия*"
-                type="surname*"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Имя*"
-                type="name*"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="Отчество"
-                type="fathername"
-                required
-            ></v-text-field>
-            <v-text-field
-              label="Номер телефона*"
-              type="phoneNumber"
-              required
-            >
-
-            </v-text-field>
-          </v-col>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-              text="Назад"
-              variant="plain"
-              @click="registerModal = false;login=true"
-          ></v-btn>
-
-          <v-btn
-              color="primary"
-              text="Зарегистрироваться"
-              variant="tonal"
-              @click="registerModal = false"
-          ></v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
   <v-dialog
       v-model="logoutModal"
@@ -202,7 +93,7 @@
           Отмена
         </v-btn>
 
-        <v-btn @click="logoutModal = false">
+        <v-btn @click="logoutFunc">
           Подтвердить
         </v-btn>
       </template>
@@ -216,6 +107,9 @@
 import LoginForm from "@/components/LoginForm.vue";
 import axios from "axios";
 import {tr} from "vuetify/locale";
+import router from "@/router";
+import {toRaw} from "vue";
+
 export default {
   name: "AppBar",
   components: {LoginForm},
@@ -224,6 +118,23 @@ export default {
       email: null,
       password: null,
     },
+    notifications: [
+      {
+        title: 'Заявка от 22.12.2024 принята в производство',
+        icon: 'mdi-check-circle',
+        color: 'green'
+      },
+      {
+        title: 'Заявка от 16.12.2024 была отклонена',
+        icon: 'mdi-close-circle',
+        color: 'red'
+      },
+      {
+        title: '16.05.2024 в 13:00 назначено заседание по делу №333',
+        icon: 'mdi-information',
+        color: 'orange'
+      },
+    ],
     email: null,
     password: null,
     drawer: false,
@@ -232,34 +143,86 @@ export default {
     rail: true,
     group: null,
     errorLoginModal: false,
-    registerModal: false,
+    userInfo: {
+      'email': '',
+      'last_name': '',
+      'name': '',
+    },
     items: [
-      { title: 'Новости',link: '/profile',icon: 'mdi-folder' },
+      {title: 'Мои заявки', link: '/user/applications', icon:'mdi-book-plus'},
+      {title: 'Судебные дела', link: '/user/courts', icon:'mdi-bank'},
+      {title: 'Судебные заседания', link: '/user/meetings', icon:'mdi-calendar-alert'},
+      { title: 'Новости',link: '/news',icon: 'mdi-newspaper' },
       // { title: 'Войти', link: '/logout',icon: 'mdi-account-multiple' },
       // { title: 'Регистрация', link: '/logout',icon: 'mdi-star' },
     ],
   }),
+  created() {
+    this.getUser()
+  },
   watch: {
     group () {
       this.drawer = false
     },
   },
   methods: {
-    loginSend() {
+    logoutFunc() {
       // const data = new FormData(this)
       // data.append("email",this)
       const that = this
-      axios.post('http://127.0.0.1:8000/Api/auth/login', {
-        email:this.email,
-        password: this.password
-      })
+      axios.post('http://127.0.0.1:8000/Api/auth/logout', {
+
+      },{
+        headers: {
+          'authorization': `Bearer ${localStorage.access_token}`
+        }
+      },)
           .then(response => {
             localStorage.access_token = response.data.token
-            location.href="./user/"
+            // location.href="/"
+            router.replace('/')
           })
           .catch(function (error) {
             if (error.response) {
               that.errorLoginModal=true
+              // Запрос был сделан, и сервер ответил кодом состояния, который
+              // выходит за пределы 2xx
+              // console.log(error.response.data);
+              // console.log(error.response.status);
+              // console.log(error.response.headers);
+
+            } else if (error.request) {
+              // Запрос был сделан, но ответ не получен
+              // `error.request`- это экземпляр XMLHttpRequest в браузере и экземпляр
+              // http.ClientRequest в node.js
+              console.log(error.request);
+            } else {
+              // Произошло что-то при настройке запроса, вызвавшее ошибку
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          })
+    },
+    getUser() {
+      axios.get('http://127.0.0.1:8000/Api/v1/user',{
+        headers: {
+          'authorization': `Bearer ${localStorage.access_token}`
+        }
+      },)
+          .then(response => {
+            // localStorage.access_token = response.data.token
+            // location.href="/"
+            // router.replace('/')
+            console.log(response)
+            this.userInfo = response["data"]
+            console.log(this.userInfo)
+            // console.log(toRaw(this.userInfo)['email'])
+          })
+          .catch(function (error) {
+            localStorage.access_token = ''
+            // location.href="/"
+            router.replace('/')
+            if (error.response) {
               // Запрос был сделан, и сервер ответил кодом состояния, который
               // выходит за пределы 2xx
               // console.log(error.response.data);
